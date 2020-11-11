@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', 'HomeController@home');
+
+Route::prefix('topics')->group(function () {
+    Route::get('architecture', 'TopicsController@architecture');
 });
