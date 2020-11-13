@@ -145,6 +145,102 @@ Set-Cookie:    laravel_certification_study_session=eyJpdiI6IlJPR0xESk0wakZHbTR3d
 &lt;/html&gt;
 "}}
     </pre>
+
+    <h4 class="header">Service Container Binding and Resolution</h4>
+
+    <p>
+        The service container is a system that stores a map of class names to a
+        closure that constructs an object of that type. It also stores instances
+        which you can either directly bind or ask the service container to
+        automatically keep a default instance (a singleton).
+    </p>
+
+    <p>
+        For example, if I define a class like this:
+    </p>
+
+    <pre>
+class Person {
+    private $name;
+    public function __construct(string $name)
+    {
+        $this->name = $name;
+    }
+
+    public function greet()
+    {
+        return "Hello! My name is $this->name.";
+    }
+}</pre>
+
+    <p>
+        I can add it to the service container in the following way:
+    </p>
+
+    <pre>
+app()->bind(Person::class, function () {
+    return new Person('Kevin');
+});</pre>
+
+    <p>
+        And then, use it like this:
+    </p>
+
+    <pre>
+$person = app()->make(Person::class);
+$person->greet();</pre>
+
+    <p>
+        Actually, you can map any string to a closure or an instance. It doesn't
+        have to be a class name. For example the framework stores some of it's
+        classes with short names, like 'db'. Nevertheless you get some benefits
+        for using a class name as a key, for example if your class constructor
+        doesn't need any parameters you don't need to register it and the
+        service container will be able to instantiate it.
+    </p>
+
+    <p>
+        The main advantage of using the service container is decoupling of the
+        class using a service and the service class. As well as being able to
+        switch the class for a different one (dependecy injection). For example,
+        you can change the class for a mock during testing.
+    </p>
+
+    <h4 class="header">Experiment</h4>
+
+    <p>
+        Here I do the same example as before but with actual code. If everything
+        is working you should see <code>Hello! My name is Kevin.</code> below.
+    </p>
+
+    @php
+        class Person {
+            private $name;
+            public function __construct(string $name)
+            {
+                $this->name = $name;
+            }
+
+            public function greet()
+            {
+                return "Hello! My name is $this->name.";
+            }
+        }
+
+        app()->bind(Person::class, function () {
+            return new Person('Kevin');
+        });
+
+        $person = app()->make(Person::class);
+    @endphp
+
+    <pre>{{ $person->greet() }}</pre>
+
+    <p>
+        The class was registered in the service container with the name
+        <code>{{ Person::class }}</code>.
+    </p>
+
 </div>
 
 @endsection
@@ -152,10 +248,18 @@ Set-Cookie:    laravel_certification_study_session=eyJpdiI6IlJPR0xESk0wakZHbTR3d
 @push('styles')
 <style>
     pre {
-        overflow-x: scroll;
+        overflow-x: auto;
         background-color: rgba(0,0,0,0.1);
         border-radius: 5px;
-        height: 40vh;
+        max-height: 40vh;
+        padding: 8px;
+    }
+
+    code {
+        background-color: rgba(0,0,0,0.1);
+        border-radius: 2px;
+        padding-left: 4px;
+        padding-right: 4px;
     }
 </style>
 @endpush
