@@ -29,7 +29,12 @@
 
     <h5 class="header">Bootstrapper</h5>
 
-    <p>They initialize stuff</p>
+    <p>
+        They initialize stuff.<br />
+        As far as I could found you are not supposed to touch them. You could,
+        since they are a protected field in the Kernel. But probably shouldn't
+        touch them anyway.
+    </p>
 
     <h5 class="header">Middleware</h5>
 
