@@ -206,7 +206,7 @@ $person->greet();</pre>
         you can change the class for a mock during testing.
     </p>
 
-    <h4 class="header">Experiment</h4>
+    <h5 class="header">Experiment</h4>
 
     <p>
         Here I do the same example as before but with actual code. If everything
@@ -240,6 +240,66 @@ $person->greet();</pre>
         The class was registered in the service container with the name
         <code>{{ Person::class }}</code>.
     </p>
+
+    <h4 class="header">Service Providers</h4>
+
+    <p>
+        Bootstrappers initialize core functionality of the framework in order
+        for the rest to work well. But we, the users of the framework also need
+        sometimes ways to initialize some <em>service</em> and <em>provide</em>
+        it to the rest of the application.
+    </p>
+
+    <p>
+        A service provider is a class that you create to get the framework to
+        initialize stuff for us. It has a couple of methods:
+        <code>register</code> and <code>boot</code>. <code>register</code> is
+        used to bind things in the service container, <code>boot</code> is used
+        to initiallize anything else. Here is an example:
+    </p>
+
+    <pre>
+class DateServiceProvider extends ServiceProvider
+{
+    public function register()
+    {
+        $this->app->bind(DateHelper::class, function () {
+            return new DateHelper();
+        });
+    }
+
+    public function boot()
+    {
+        date_default_timezone_set('America/Bogota');
+    }
+}</pre>
+
+    <p>
+        Where <code>DateHelper</code> is a class defined like this.
+    </p>
+
+    <pre>
+class DateHelper {
+    public function formatLocal(Carbon $date)
+    {
+        return $date->format('d/m/Y h:i a');
+    }
+}</pre>
+
+    <h5 class="header">Experiment</h5>
+
+    <p>
+        Add the previous 2 classes to the project, add the provider to
+        <code>app.php</code>.
+        Then use the following code.
+    </p>
+
+    <pre>
+app()->make(DateHelper::class)->formatLocal(now())</pre>
+
+    <p>Result:</p>
+
+    <pre>{{ app()->make(\App\Contracts\DateHelper::class)->formatLocal(now()) }}</pre>
 
 </div>
 
