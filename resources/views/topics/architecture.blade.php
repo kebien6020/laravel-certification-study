@@ -70,8 +70,7 @@
         Here is how a request looks in the logs:
     </p>
 
-    <pre>
-[2020-11-13 22:18:14] local.DEBUG: LogRequests Before {"request":{"Illuminate\\Http\\Request":"GET / HTTP/1.1
+    <pre><code class="plaintext">[2020-11-13 22:18:14] local.DEBUG: LogRequests Before {"request":{"Illuminate\\Http\\Request":"GET / HTTP/1.1
 Accept:                    text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
 Accept-Encoding:           gzip, deflate
 Accept-Language:           en-US,en;q=0.9,es;q=0.8
@@ -144,7 +143,7 @@ Set-Cookie:    laravel_certification_study_session=eyJpdiI6IlJPR0xESk0wakZHbTR3d
     &lt;/body&gt;
 &lt;/html&gt;
 "}}
-    </pre>
+    </code></pre>
 
     <h4 class="header">Service Container Binding and Resolution</h4>
 
@@ -159,8 +158,7 @@ Set-Cookie:    laravel_certification_study_session=eyJpdiI6IlJPR0xESk0wakZHbTR3d
         For example, if I define a class like this:
     </p>
 
-    <pre>
-class Person {
+    <pre><code class="php">class Person {
     private $name;
     public function __construct(string $name)
     {
@@ -171,24 +169,22 @@ class Person {
     {
         return "Hello! My name is $this->name.";
     }
-}</pre>
+}</code></pre>
 
     <p>
         I can add it to the service container in the following way:
     </p>
 
-    <pre>
-app()->bind(Person::class, function () {
+    <pre><code class="php">app()->bind(Person::class, function () {
     return new Person('Kevin');
-});</pre>
+});</code></pre>
 
     <p>
         And then, use it like this:
     </p>
 
-    <pre>
-$person = app()->make(Person::class);
-$person->greet();</pre>
+    <pre><code class="php">$person = app()->make(Person::class);
+$person->greet();</code></pre>
 
     <p>
         Actually, you can map any string to a closure or an instance. It doesn't
@@ -234,7 +230,7 @@ $person->greet();</pre>
         $person = app()->make(Person::class);
     @endphp
 
-    <pre>{{ $person->greet() }}</pre>
+    <pre><code class="php">{{ $person->greet() }}</code></pre>
 
     <p>
         The class was registered in the service container with the name
@@ -258,8 +254,7 @@ $person->greet();</pre>
         to initiallize anything else. Here is an example:
     </p>
 
-    <pre>
-class DateServiceProvider extends ServiceProvider
+    <pre><code class="php">class DateServiceProvider extends ServiceProvider
 {
     public function register()
     {
@@ -272,19 +267,18 @@ class DateServiceProvider extends ServiceProvider
     {
         date_default_timezone_set('America/Bogota');
     }
-}</pre>
+}</code></pre>
 
     <p>
         Where <code>DateHelper</code> is a class defined like this.
     </p>
 
-    <pre>
-class DateHelper {
+    <pre><code class="php">class DateHelper {
     public function formatLocal(Carbon $date)
     {
         return $date->format('d/m/Y h:i a');
     }
-}</pre>
+}</code></pre>
 
     <h5 class="header">Experiment</h5>
 
@@ -294,12 +288,81 @@ class DateHelper {
         Then use the following code.
     </p>
 
-    <pre>
-app()->make(DateHelper::class)->formatLocal(now())</pre>
+    <pre><code class="php">app()->make(DateHelper::class)->formatLocal(now())</code></pre>
 
     <p>Result:</p>
 
-    <pre>{{ app()->make(\App\Contracts\DateHelper::class)->formatLocal(now()) }}</pre>
+    <pre><code class="plaintext">{{ app()->make(\App\Contracts\DateHelper::class)->formatLocal(now()) }}</code></pre>
+
+    <h4 class="header">Facades</h4>
+
+    <p>
+        A common case when using the service container is geting an instance and
+        then calling some method within it. For example:
+    </p>
+
+    <pre><code class="php">app()->make(DateHelper::class)->formatLocal(now())
+app()->make('db')->getDatabaseName()</code></pre>
+
+    <p>
+        This gets kind of annoying really fast. It would be easier if we could
+        call these methods like this.
+    </p>
+
+    <pre><code class="php">Date::formatLocal(now())
+DB::getDatabaseName()</code></pre>
+
+    <p>
+        This kind of syntax can be enabled by using the
+        <code>__callStatic()</code> magic method. Laravel used this to expose
+        a more ergonomic interface to multiple of the built-in services.
+    </p>
+
+    <p>
+        If we want to create a facade for our own service, it's quite simple
+        since the <code>Facade</code> class was designed to be inherited from
+        to create other facades.
+    </p>
+
+    <pre><code class="php">class Date extends Facade
+{
+    protected static function getFacadeAccessor(): string
+    {
+        return DateHelper::class;
+    }
+}</code></pre>
+
+    <p>
+        You only need to override a single method returning the name of the
+        entry in the Service Container. In fact, here is how the built in facade
+        for DB looks.
+    </p>
+
+    <pre><code class="php">class DB extends Facade
+{
+    /**
+     * Get the registered name of the component.
+     *
+     * @return string
+     */
+    protected static function getFacadeAccessor()
+    {
+        return 'db';
+    }
+}</code></pre>
+
+    <h5 class="header">Experiment</h5>
+
+    <p>
+        Given the previous <code>Date</code> class
+        (<code>app/Facades/Date.php</code>). This code:
+    </p>
+
+    <pre><code class="php">Date::formatLocal(now())</code></pre>
+
+    <p>Produces this:</p>
+
+    <pre><code class="plaintext">{{\App\Facades\Date::formatLocal(now())}}</code></pre>
 
 </div>
 
@@ -309,10 +372,8 @@ app()->make(DateHelper::class)->formatLocal(now())</pre>
 <style>
     pre {
         overflow-x: auto;
-        background-color: rgba(0,0,0,0.1);
         border-radius: 5px;
         max-height: 40vh;
-        padding: 8px;
     }
 
     code {
@@ -322,4 +383,10 @@ app()->make(DateHelper::class)->formatLocal(now())</pre>
         padding-right: 4px;
     }
 </style>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/styles/atom-one-dark.min.css">
+@endpush
+
+@push('scripts')
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
 @endpush
