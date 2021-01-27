@@ -17,4 +17,5 @@ Route::get('/', 'HomeController@home');
 
 Route::prefix('topics')->group(function () {
     Route::get('architecture', 'TopicsController@architecture');
+    Route::get('controllers', 'TopicsController@controllers');
 });

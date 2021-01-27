@@ -388,26 +388,3 @@ DB::getDatabaseName()</code></pre>
 </div>
 
 @endsection
-
-@push('styles')
-<style>
-    pre {
-        overflow-x: auto;
-        border-radius: 5px;
-        max-height: 40vh;
-    }
-
-    code {
-        background-color: rgba(0,0,0,0.1);
-        border-radius: 2px;
-        padding-left: 4px;
-        padding-right: 4px;
-    }
-</style>
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/styles/atom-one-dark.min.css">
-@endpush
-
-@push('scripts')
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/highlight.min.js"></script>
-<script>hljs.initHighlightingOnLoad();</script>
-@endpush

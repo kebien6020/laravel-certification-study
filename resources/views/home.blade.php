@@ -7,6 +7,7 @@
 
     <div class="collection">
         <a class="collection-item" href="/topics/architecture">Architecture</a>
+        <a class="collection-item" href="/topics/controllers">Controllers</a>
     </div>
 </div>
 
