@@ -364,6 +364,27 @@ DB::getDatabaseName()</code></pre>
 
     <pre><code class="plaintext">{{\App\Facades\Date::formatLocal(now())}}</code></pre>
 
+
+    <h4 class="header">HTTP Verbs</h4>
+
+    <p>
+        The HTTP verbs are a part of an HTTP Request, that indicates the desired
+        action to be performed for a resource.
+    </p>
+
+    <p>
+        Although any verb can be used for any action, each one of the commonly
+        used verbs has defined semantics: The most commonly used verbs are:
+        GET, POST, PUT, DELETE, PATCH, HEAD and OPTIONS.
+    </p>
+
+    <p>
+        In laravel you can manually get the verb of the request using the
+        <code>method</code> function in the Request Facade.
+    </p>
+
+    <pre><code class="php">Request::method()</code></pre>
+    <pre><code class="plaintext">{{Request::method()}}</code></pre>
 </div>
 
 @endsection
